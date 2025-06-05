@@ -11,8 +11,8 @@ const cors = require('cors');
 app.use(cors());
 
 //* importazione router per le rotte dei film e utilizzo
-const moviesRouter = require('./routes/movies');
-app.use('/api/movies', moviesRouter);
+const searchRouter = require('./routes/search');
+app.use('/api', searchRouter);
 
 //* definizione porta server
 const PORT = process.env.PORT || 3000;
