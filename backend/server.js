@@ -10,6 +10,10 @@ const app = express();
 const cors = require('cors');
 app.use(cors());
 
+//* importazione router per le rotte dei film e utilizzo
+const moviesRouter = require('./routes/movies');
+app.use('/api/movies', moviesRouter);
+
 //* definizione porta server
 const PORT = process.env.PORT || 3000;
 
