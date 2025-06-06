@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './App.css'; 
+
 //* Importa la funzione aggiornata dal file di utilities
 import { getFlagRepresentation } from './utils/flags'; 
+import { getStarRatingIcons } from './utils/starRating';
 
 //* dichiarazione costante che contiene la parte fissa dell'URL delle immagini
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w180/';
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w185';
 
 
 function App() {
@@ -88,8 +90,7 @@ function App() {
 
                                 return (
                                     <div key={item.id} style={{border: '1px solid #ccc', padding: '10px', marginBottom: '10px'}}> 
-                                        //* Visualizziamo l'immagine del poster, il titolo, il titolo originale, la lingua e il voto
-                                        //* Utilizziamo l'URL base per le immagini e il percorso del poster
+
                                         { item.poster_path ? (
                                         <img 
                                             src={`${IMAGE_BASE_URL}${item.poster_path}`} 
@@ -115,7 +116,7 @@ function App() {
                                                 <span>{flagSrc}</span> 
                                             )}
                                         </p>
-                                        <p><strong>Voto:</strong> {item.vote_average.toFixed(1)} / 10</p>
+                                        <p><strong>Voto:</strong> {getStarRatingIcons(item.vote_average)}</p>
                                         {/* Visualizziamo la data di uscita/prima trasmissione, ora è standardizzata */}
                                         {item.release_date && <p><strong>Data di Uscita:</strong> {item.release_date}</p>}
                                         <hr /> 
