@@ -150,6 +150,71 @@ router.get('/', async (req, res) => {
     }
 });
 
+//* aggiungo nuovo endpoint per l'anteprima sull'homepage
+// l'endpoint deve recuerare i contenuti di tendenza e formattarli come i risultati di ricerca, 
+// includendo copertina titolo, genere
+router.get('/trending', async (req, res) => {
+    try {
+        const TMDB_API_KEY = process.env.TMDB_API_KEY;
+
+        // Chiamata all'API di TMDb per i contenuti di tendenza (film e serie TV) del giorno
+        const trendingResponse = await axios.get(`${TMDB_BASE_URL}/trending/all/day`, {
+            params: { api_key: TMDB_API_KEY, language: 'it-IT' }
+        });
+
+        // standardizzo i risultati
+        const tredingItems = tredingResponse.data.results.map(item => {
+            const mediaType = item.media_type;
+            const genresMap = mediaType === 'movie' ? movieGenresMap : tvGenresMap;
+            //! se mediaType è = 'movie' 
+            //! allora (?) uso la mappa dei generi dei film
+            //! altrimenti (:) uso quella delle serie TV
+
+            return {
+                id: item.id,
+                title: item.title || item.name, // titolo per film o serie TV
+                //! uso l'operatore logico OR (||) per gestire i casi in cui title è undefined
+                original_title: item.original_title || item.original_name, // titolo originale per film o serie TV
+                //! uso l'operatore logico OR (||) per gestire i casi in cui original_title è undefined
+                original_language: item.original_language,
+                vote_average: item.vote_average,
+                poster_path: item.poster_path,
+                overview: item.overview,
+                release_date: item.release_date || item.first_air_date, // data di rilascio per film o serie TV
+                //! uso l'operatore logico OR (||) per gestire i casi in cui release_date è undefined
+                media_type: mediaType, // tipo di media (movie o tv)
+                genres: item.genre_ids 
+                    ? 
+                    item.genre_ids.map(id => genresMap.get(id))
+                    .filter(Boolean) 
+                    : []
+            };
+        }).filter(item => item.poster_path); // Filtra solo gli elementi con poster_path
+        //! filtro gli elementi che hanno poster_path per evitare di mostrare contenuti senza copertina
+
+        //* Invia i primi 8 risultati al frontend
+        res.json(tredingItems.slice(0, 8)); // Limito a 8 risultati per l'anteprima
+    } catch (error) {
+        console.error("Errore durante il recupero dei contenuti:", error.message);
+        if (error.response) {
+            res.status(error.response.status).json({
+                error: 'Errore dalla API di TMDb (Treding)',
+                details: error.response.data
+            });
+        } else if (error.request) {
+            res.status(500).json({
+                error: 'Nessuna risposta dalla API di TMDb (Treding)',
+                details: error.message
+            });
+        } else {
+            res.status(500).json({
+                error: 'Errore generico durante la richiesta (Treding)',
+                details: error.message
+            });
+        }
+    }
+});
+
 
 //* Carico i generi all'avvio del server una sola volta
 loadGenres()
