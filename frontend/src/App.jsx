@@ -48,85 +48,100 @@ function App() {
     };
 
     return (
+        // L'intero componente deve restituire un singolo elemento radice.
+        // Il div.App racchiude header e main.
         <div className="App">
-            <h1>BoolFlix Search</h1>
+            <header>
+                {/* Logo BoolFlix */}
+                <h1>BoolFlix</h1>
 
-            <div>
-                <input
-                    type="text"
-                    placeholder="Cerca un film o una serie TV..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            handleSearch();
-                        }
-                    }}
-                />
-                <button onClick={handleSearch} disabled={loading}>
-                    {loading ? 'Ricerca...' : 'Cerca'}
-                </button>
-            </div>
+                {/* Contenitore della searchbar */}
+                <div className="search-bar-container"> {/* Aggiunto una classe per stile futuro se necessario */}
+                    <input
+                        type="text"
+                        placeholder="Cerca film o serie TV..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSearch();
+                            }
+                        }}
+                    />
+                    <button onClick={handleSearch} disabled={loading}>
+                        {loading ? 'Ricerca...' : 'Cerca'}
+                    </button>
+                </div>
+            </header>
 
-            {error && <div>Errore: {error}</div>}
+            <main>
+                {/* Messaggi di errore */}
+                {error && <div className="error-message">Errore: {error}</div>}
 
-            <div>
-                {loading && <p>Caricamento risultati...</p>} 
+                {/* Messaggi di stato */}
+                {loading && <p className="loading-message">Caricamento risultati...</p>} 
 
+                {/* Messaggi quando non ci sono risultati o la ricerca non è ancora iniziata */}
                 {!loading && movies.length === 0 && searchQuery && !error && (
-                    <p>Nessun risultato trovato per "{searchQuery}".</p>
+                    <p className="no-results-message">Nessun risultato trovato per "{searchQuery}".</p>
                 )}
                 {!loading && movies.length === 0 && !searchQuery && !error && (
-                    <p>Inizia a cercare un film o una serie TV!</p>
+                    <p className="initial-message">Inizia a cercare un film o una serie TV!</p>
                 )}
                 
+                {/* Visualizzazione dei film/serie TV trovati */}
                 {movies.length > 0 && (
-                    <div>
+                    <section className="results-section">
                         <h2>Risultati della ricerca:</h2>
-                        <div>
-                            {movies.map((item) => { // Ho rinominato 'movie' in 'item' per chiarezza, dato che include anche serie TV
+                        {/* Questo div conterrà le card dei risultati, userà flexbox */}
+                        <div className="results-grid"> 
+                            {movies.map((item) => { 
                                 const flagSrc = getFlagRepresentation(item.original_language);
                                 const isFlagUrl = flagSrc.startsWith('http'); 
 
                                 return (
-                                    <div key={item.id} style={{border: '1px solid #ccc', padding: '10px', marginBottom: '10px'}}> 
-
-                                        { item.poster_path ? (
-                                        <img 
-                                            src={`${IMAGE_BASE_URL}${item.poster_path}`} 
-                                            alt={item.title || item.name} 
-                                            style={{ maxWidth: '100%', height: 'auto', borderRadius: '10px'}}
-                                        />
+                                    <div key={item.id} className="media-card"> 
+                                        {/* Copertina o fallback */}
+                                        {item.poster_path ? (
+                                            <img 
+                                                src={`${IMAGE_BASE_URL}${item.poster_path}`} 
+                                                alt={item.title} // Usiamo solo item.title qui
+                                                className="poster-image"
+                                            />
                                         ) : (
-                                            <div style={{ width: '185px', height: '278px', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', color: '#555', borderRadius: '4px' }}>
+                                            <div className="poster-placeholder">
                                                 Nessuna Immagine
                                             </div>
                                         )}
-                                        <h3>{item.title} ({item.media_type === 'movie' ? 'Film' : 'Serie TV'})</h3>
-                                        <p><strong>Titolo Originale:</strong> {item.original_title}</p>
-                                        <p>
-                                            <strong>Lingua:</strong> {' '}
-                                            {isFlagUrl ? (
-                                                <img 
-                                                    src={flagSrc} 
-                                                    alt={`Bandiera ${item.original_language}`} 
-                                                    style={{ verticalAlign: 'middle', marginLeft: '5px', width: '20px', height: 'auto' }} 
-                                                />
-                                            ) : (
-                                                <span>{flagSrc}</span> 
-                                            )}
-                                        </p>
-                                        <p><strong>Voto:</strong> {getStarRatingIcons(item.vote_average)}</p>
-                                        {/* Visualizziamo la data di uscita/prima trasmissione, ora è standardizzata */}
-                                        {item.release_date && <p><strong>Data di Uscita:</strong> {item.release_date}</p>}
-                                        <hr /> 
+                                        
+                                        {/* Dettagli della card (visibili solo on hover nella prossima fase) */}
+                                        <div className="card-info">
+                                            <h3>{item.title} ({item.media_type === 'movie' ? 'Film' : 'Serie TV'})</h3>
+                                            <p><strong>Titolo Originale:</strong> {item.original_title}</p>
+                                            <p>
+                                                <strong>Lingua:</strong> {' '}
+                                                {isFlagUrl ? (
+                                                    <img 
+                                                        src={flagSrc} 
+                                                        alt={`Bandiera ${item.original_language}`} 
+                                                        className="flag-icon"
+                                                    />
+                                                ) : (
+                                                    <span>{flagSrc}</span> 
+                                                )}
+                                            </p>
+                                            <p><strong>Voto:</strong> {getStarRatingIcons(item.vote_average)}</p>
+                                            {item.release_date && <p><strong>Data di Uscita:</strong> {item.release_date}</p>}
+                                            {/* Overview - visibile solo on hover nella prossima fase */}
+                                            {item.overview && <p className="overview"><strong>Trama:</strong> {item.overview}</p>}
+                                        </div>
                                     </div>
                                 );
                             })}
                         </div>
-                    </div>
+                    </section>
                 )}
-            </div>
+            </main>
         </div>
     );
 }

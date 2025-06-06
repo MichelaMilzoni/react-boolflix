@@ -1,46 +1,333 @@
+/* --- Stili Generali della Pagina --- */
+/* Applica box-sizing: border-box a tutti gli elementi */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Stile per l'elemento radice del DOM dove viene montata l'app React */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    max-width: 1280px; /* Larghezza massima del contenitore principale */
+    margin: 0 auto; /* Centra l'elemento radice orizzontalmente */
+    padding: 0; /* Rimuovi il padding predefinito di #root, lo gestiremo altrove */
+    text-align: center; /* Allinea il testo al centro per i contenuti globali */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Stile per il corpo della pagina */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #141414; /* Sfondo scuro tipico di Netflix */
+    color: #e5e5e5; /* Colore del testo chiaro per contrasto */
+    font-family: 'Inter', sans-serif; /* Utilizza un font pulito, fallback a sans-serif */
+    line-height: 1.6; /* Altezza della linea per leggibilità */
+    scroll-behavior: smooth; /* Scorrimento fluido della pagina */
+    overflow-x: hidden; /* **CORREZIONE**: Nasconde la scrollbar orizzontale */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Stile per il contenitore principale dell'applicazione React */
+.App {
+    min-height: 100vh; /* Assicura che l'app occupi almeno l'altezza della viewport */
+    padding-top: 80px; /* Spazio per l'header fisso, impedisce al contenuto di nascondersi sotto */
 }
 
-.card {
-  padding: 2em;
+/* --- Stili Header --- */
+/* Stile per l'header fisso in alto */
+header {
+    background-color: #0e0e0e; /* Colore di sfondo scuro per l'header */
+    padding: 15px 40px; /* Padding interno per spaziatura */
+    display: flex; /* Abilita flexbox per allineare gli elementi orizzontalmente */
+    justify-content: space-between; /* Spinge il logo a sinistra e la search bar a destra */
+    align-items: center; /* Centra verticalmente gli elementi */
+    position: fixed; /* Rende l'header fisso in alto allo schermo */
+    width: 100%; /* Occupa tutta la larghezza disponibile */
+    top: 0; /* Lo posiziona in cima */
+    left: 0; /* Lo posiziona a sinistra */
+    z-index: 1000; /* Assicura che l'header rimanga sopra tutti gli altri contenuti */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6); /* Aggiunge una leggera ombra per un effetto di profondità */
+    /* Non è necessario qui, box-sizing è globale ora */
 }
 
-.read-the-docs {
-  color: #888;
+/* Stile per il logo (titolo h1 all'interno dell'header) */
+header h1 {
+    color: #e50914; /* Rosso brillante, simile al logo Netflix */
+    font-size: 2.2em; /* Dimensione del font */
+    margin: 0; /* Rimuove i margini predefiniti */
+    font-weight: bold; /* Rende il testo in grassetto */
+    text-transform: uppercase; /* Trasforma il testo in maiuscolo */
+    letter-spacing: 1px; /* Spaziatura tra le lettere */
 }
 
+/* Stile per il contenitore della searchbar (che contiene input e button) */
+.search-bar-container {
+    display: flex; /* Allinea input e button orizzontalmente */
+    gap: 10px; /* Spazio tra gli elementi */
+    flex-grow: 1; /* Permette al container di crescere */
+    justify-content: flex-end; /* Allinea gli elementi a destra all'interno del container */
+}
+
+/* Stile per il campo di input di ricerca */
+header input {
+    background-color: #333; /* Sfondo scuro per l'input */
+    color: #e5e5e5; /* Colore del testo nell'input */
+    border: 1px solid #555; /* Bordo sottile */
+    padding: 10px 15px; /* Padding interno */
+    border-radius: 6px; /* Angoli arrotondati */
+    font-size: 1em; /* Dimensione del font */
+    max-width: 250px; /* **CORREZIONE**: Larghezza massima, ma flessibile */
+    flex-grow: 1; /* **CORREZIONE**: Permette all'input di occupare spazio */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transizione per effetti focus */
+}
+
+/* Stile per l'input quando è in focus (selezionato) */
+header input:focus {
+    border-color: #e50914; /* Bordo rosso al focus */
+    outline: none; /* Rimuove l'outline predefinito del browser */
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.4); /* Ombra al focus */
+}
+
+/* Stile per il pulsante di ricerca */
+header button {
+    background-color: #e50914; /* Rosso Netflix */
+    color: white; /* Colore del testo */
+    border: none; /* Rimuove il bordo */
+    padding: 10px 20px; /* Padding interno */
+    border-radius: 6px; /* Angoli arrotondati */
+    font-size: 1em; /* Dimensione del font */
+    cursor: pointer; /* Cambia il cursore a "mano" */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transizioni per hover */
+    font-weight: bold; /* Testo in grassetto */
+}
+
+/* Stile per il pulsante di ricerca al passaggio del mouse */
+header button:hover {
+    background-color: #f40612; /* Rosso leggermente più chiaro al hover */
+    transform: scale(1.02); /* Piccolo effetto zoom al hover */
+}
+
+/* --- Stili Contenuto Principale (Main) --- */
+/* Stile per l'area principale del contenuto sotto l'header */
+main {
+    padding: 40px 20px; /* Padding per il contenuto principale */
+    max-width: 1200px; /* Larghezza massima per centrare i contenuti */
+    margin: 0 auto; /* Centra il main orizzontalmente nella pagina */
+}
+
+/* Stile per il titolo "Risultati della ricerca:" */
+main h2 {
+    color: #e5e5e5; /* Colore del testo */
+    margin-bottom: 30px; /* Margine sotto il titolo */
+    font-size: 1.8em; /* Dimensione del font */
+    text-align: left; /* Allinea il titolo a sinistra */
+    padding-left: 20px; /* Padding a sinistra per allineamento */
+}
+
+/* --- Stili Messaggi di Stato (Caricamento, Errore, Nessun Risultato) --- */
+/* Stile comune per tutti i messaggi di stato */
+.error-message,
+.loading-message,
+.no-results-message,
+.initial-message {
+    margin-top: 20px; /* Margine superiore */
+    font-size: 1.2em; /* Dimensione del font */
+    color: #e5e5e5; /* Colore del testo */
+    text-align: center; /* Allinea il testo al centro */
+    padding: 15px; /* Padding interno */
+    background-color: #222; /* Sfondo scuro */
+    border-radius: 8px; /* Angoli arrotondati */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Ombra */
+}
+
+/* Stile specifico per il messaggio di errore */
+.error-message {
+    color: #ff4d4d; /* Rosso per gli errori */
+}
+
+/* --- Stili Griglia Risultati e Card --- */
+/* Stile per il contenitore della griglia dei risultati */
+.results-grid {
+    display: grid; /* Utilizza CSS Grid per un layout a griglia responsivo */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Colonne adattive: min 180px, max 1fr */
+    gap: 20px; /* Spazio tra le card */
+    justify-content: center; /* Centra le card all'interno della griglia */
+    padding: 20px; /* Padding interno */
+}
+
+/* Stile base per ogni card di film/serie TV */
+.media-card {
+    position: relative; /* Necessario per posizionare l'overlay delle informazioni */
+    width: 100%; /* Occupa tutta la larghezza disponibile nella colonna della griglia */
+    padding-bottom: 150%; /* Crea un aspect ratio 2:3 (altezza 1.5x della larghezza) per il poster */
+    overflow: hidden; /* Nasconde qualsiasi contenuto che esce dai bordi */
+    border-radius: 8px; /* Angoli arrotondati per la card */
+    background-color: #222; /* Sfondo scuro per le card */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Ombra per un effetto di profondità */
+    cursor: pointer; /* Cambia il cursore a "mano" */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease; /* Transizioni fluide per l'hover */
+}
+
+/* Stile per la card al passaggio del mouse */
+.media-card:hover {
+    transform: scale(1.05); /* Piccolo zoom al hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7); /* Ombra più pronunciata */
+    z-index: 10; /* Per farla "venire avanti" rispetto alle altre card */
+}
+
+/* Stile per l'immagine del poster all'interno della card */
+.media-card .poster-image {
+    position: absolute; /* Posiziona l'immagine rispetto alla card */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Assicura che l'immagine copra l'area senza distorsioni */
+    border-radius: 8px; /* Angoli arrotondati */
+    transition: filter 0.3s ease; /* Transizione per l'effetto di scurimento */
+}
+
+/* Scurisce l'immagine del poster al passaggio del mouse sulla card */
+.media-card:hover .poster-image {
+    filter: brightness(0.4); /* Rende l'immagine più scura */
+}
+
+/* Stile per il placeholder "Nessuna Immagine" */
+.poster-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #333; /* Sfondo grigio scuro */
+    display: flex; /* Utilizza flexbox per centrare il testo */
+    align-items: center;
+    justify-content: center;
+    color: #777; /* Colore del testo */
+    font-size: 0.9em; /* Dimensione del font */
+    border-radius: 8px; /* Angoli arrotondati */
+}
+
+/* Stile per il contenitore delle informazioni sulla card (overlay) */
+.card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Copre l'intera card */
+    background: rgba(0, 0, 0, 0.85); /* Sfondo semi-trasparente scuro */
+    color: white; /* Colore del testo */
+    padding: 15px; /* Padding interno */
+    box-sizing: border-box; /* Include padding nel width/height */
+    display: flex;
+    flex-direction: column; /* Organizza gli elementi in colonna */
+    justify-content: flex-start; /* Inizia il contenuto dall'alto */
+    align-items: flex-start; /* Allinea il testo a sinistra */
+    opacity: 0; /* Inizialmente invisibile */
+    transform: translateY(100%); /* Nasconde l'info sotto la card */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Transizione per l'hover */
+    text-align: left; /* Assicura allineamento testo corretto */
+    font-size: 0.9em; /* Dimensione testo più piccola per adattarsi */
+    overflow-y: auto; /* Abilita scroll se il contenuto è troppo lungo */
+    -ms-overflow-style: none;  /* Nasconde la scrollbar per IE and Edge */
+    scrollbar-width: none;  /* Nasconde la scrollbar per Firefox */
+}
+
+/* Nasconde la scrollbar per i browser Webkit (Chrome, Safari) */
+.card-info::-webkit-scrollbar {
+    display: none;
+}
+
+/* Rende visibile e sposta l'info della card al passaggio del mouse */
+.media-card:hover .card-info {
+    opacity: 1; /* Rende visibile */
+    transform: translateY(0); /* Sposta l'info sopra la card */
+}
+
+/* Stile per il titolo h3 all'interno della card info */
+.card-info h3 {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: white;
+}
+
+/* Stile per i paragrafi all'interno della card info */
+.card-info p {
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+/* Stile per il testo in grassetto all'interno della card info */
+.card-info strong {
+    color: #e5e5e5;
+}
+
+/* --- Stili Icone (Bandiere e Stelle) --- */
+/* Stile per le icone delle bandiere */
+.flag-icon {
+    vertical-align: middle; /* Allinea verticalmente con il testo */
+    margin-left: 5px; /* Margine a sinistra */
+    width: 20px; /* Larghezza fissa */
+    height: auto; /* Altezza automatica per mantenere l'aspetto */
+    border-radius: 2px; /* Piccola arrotondamento per la bandiera */
+}
+
+/* Stile per le icone delle stelle */
 .star-icon {
-    color: gold; /* O 'yellow' se preferisci un giallo più brillante */
+    color: gold; /* Colore delle stelle */
+    margin-right: 2px; /* Piccolo spazio tra le stelle */
+    font-size: 1.1em; /* Leggermente più grandi */
+}
+
+/* --- Stili Specifici di Contenuto (e.g. Overview) --- */
+/* Stile per la trama (overview) */
+.overview {
+    font-size: 0.85em; /* Dimensione testo più piccola */
+    margin-top: 10px; /* Margine superiore */
+    max-height: 120px; /* Limita l'altezza della trama */
+    overflow: hidden; /* Nasconde il testo in eccesso */
+    text-overflow: ellipsis; /* Aggiunge "..." se il testo è troncato */
+    display: -webkit-box; /* Necessario per -webkit-line-clamp */
+    -webkit-line-clamp: 6; /* Limita a 6 righe di testo (adatta se necessario) */
+    -webkit-box-orient: vertical; /* Necessario per -webkit-line-clamp */
+}
+
+/* --- Responsività --- */
+/* Regole per schermi con larghezza massima di 768px (tablet e mobile) */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column; /* Impila logo e searchbar in colonna */
+        padding: 10px 20px; /* Riduce il padding */
+        position: relative; /* Rimuove la posizione fissa su mobile per evitare problemi */
+        height: auto; /* Altezza automatica */
+    }
+
+    .App {
+        padding-top: 0; /* Rimuove il padding superiore se l'header non è fisso */
+    }
+
+    header h1 {
+        margin-bottom: 10px; /* Margine sotto il logo */
+    }
+
+    header input {
+        width: 100%; /* L'input occupa tutta la larghezza disponibile */
+    }
+
+    .search-bar-container {
+        width: 100%; /* Il contenitore della searchbar occupa tutta la larghezza */
+        justify-content: center; /* Centra gli elementi al suo interno */
+    }
+
+    .results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Colonne più piccole su mobile */
+        gap: 15px; /* Riduce lo spazio tra le card */
+    }
+
+    .media-card {
+        padding-bottom: 150%; /* Mantiene l'aspect ratio */
+    }
+
+    .card-info {
+        font-size: 0.8em; /* Riduce la dimensione del testo delle info della card */
+        padding: 10px; /* Riduce il padding interno */
+    }
 }
