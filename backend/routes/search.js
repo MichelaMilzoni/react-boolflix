@@ -150,7 +150,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-//* aggiungo nuovo endpoint per l'anteprima sull'homepage
+//* aggiungo nuovo endpoint per l'anteprima sull'homepage di 8 film/serie tv di tendenza
 // l'endpoint deve recuerare i contenuti di tendenza e formattarli come i risultati di ricerca, 
 // includendo copertina titolo, genere
 router.get('/trending', async (req, res) => {
@@ -163,7 +163,7 @@ router.get('/trending', async (req, res) => {
         });
 
         // standardizzo i risultati
-        const tredingItems = tredingResponse.data.results.map(item => {
+        const trendingItems = trendingResponse.data.results.map(item => {
             const mediaType = item.media_type;
             const genresMap = mediaType === 'movie' ? movieGenresMap : tvGenresMap;
             //! se mediaType è = 'movie' 
@@ -193,22 +193,22 @@ router.get('/trending', async (req, res) => {
         //! filtro gli elementi che hanno poster_path per evitare di mostrare contenuti senza copertina
 
         //* Invia i primi 8 risultati al frontend
-        res.json(tredingItems.slice(0, 8)); // Limito a 8 risultati per l'anteprima
+        res.json(trendingItems.slice(0, 8)); // Limito a 8 risultati per l'anteprima
     } catch (error) {
         console.error("Errore durante il recupero dei contenuti:", error.message);
         if (error.response) {
             res.status(error.response.status).json({
-                error: 'Errore dalla API di TMDb (Treding)',
+                error: 'Errore dalla API di TMDb (Trending)',
                 details: error.response.data
             });
         } else if (error.request) {
             res.status(500).json({
-                error: 'Nessuna risposta dalla API di TMDb (Treding)',
+                error: 'Nessuna risposta dalla API di TMDb (Trending)',
                 details: error.message
             });
         } else {
             res.status(500).json({
-                error: 'Errore generico durante la richiesta (Treding)',
+                error: 'Errore generico durante la richiesta (Trending)',
                 details: error.message
             });
         }
