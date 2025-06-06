@@ -47,6 +47,16 @@ function App() {
         setTrendingItems([]); // Nascondi l'anteprima quando si inizia una ricerca
         setHasSearched(true); // Indica che una ricerca è stata avviata 
 
+    // NUOVO: Se la query di ricerca è vuota o solo spazi bianchi, non fare nulla.
+    if (searchQuery.trim() === '') {
+        setLoading(false); // Assicurati che lo stato di caricamento sia disattivato
+        setMovies([]);     // Assicurati che i risultati siano vuoti
+        setTrendingItems([]); // Assicurati che l'anteprima sia nascosta
+        setError(null);    // Rimuovi eventuali errori precedenti
+        setHasSearched(false); // Reinizializza per mostrare l'anteprima di nuovo
+    return; // Esci dalla funzione
+}
+
         try {
             // L'URL è aggiornato al nuovo endpoint del backend per la ricerca combinata
             const response = await axios.get(`http://localhost:4000/api`, {
