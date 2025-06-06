@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './App.css'; 
-// Importa la funzione aggiornata dal file di utilities
+//* Importa la funzione aggiornata dal file di utilities
 import { getFlagRepresentation } from './utils/flags'; 
+
+//* dichiarazione costante che contiene la parte fissa dell'URL delle immagini
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w180/';
+
 
 function App() {
     // Stati per gestire la query di ricerca, i film, lo stato di caricamento e gli errori
@@ -83,8 +87,20 @@ function App() {
                                 const isFlagUrl = flagSrc.startsWith('http'); 
 
                                 return (
-                                    <div key={item.id}> 
-                                        {/* Aggiungiamo il tipo di media per distinguere */}
+                                    <div key={item.id} style={{border: '1px solid #ccc', padding: '10px', marginBottom: '10px'}}> 
+                                        //* Visualizziamo l'immagine del poster, il titolo, il titolo originale, la lingua e il voto
+                                        //* Utilizziamo l'URL base per le immagini e il percorso del poster
+                                        { item.poster_path ? (
+                                        <img 
+                                            src={`${IMAGE_BASE_URL}${item.poster_path}`} 
+                                            alt={item.title || item.name} 
+                                            style={{ maxWidth: '100%', height: 'auto', borderRadius: '10px'}}
+                                        />
+                                        ) : (
+                                            <div style={{ width: '185px', height: '278px', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', color: '#555', borderRadius: '4px' }}>
+                                                Nessuna Immagine
+                                            </div>
+                                        )}
                                         <h3>{item.title} ({item.media_type === 'movie' ? 'Film' : 'Serie TV'})</h3>
                                         <p><strong>Titolo Originale:</strong> {item.original_title}</p>
                                         <p>
