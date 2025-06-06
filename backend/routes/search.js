@@ -10,6 +10,43 @@ const router = express.Router();
 //* Definizione base URL per le richieste API
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
+//* definizione variabili globali per i generi 
+let movieGenresMap = new Map(); // Mappa per i generi dei film
+let tvGenresMap = new Map(); // Mappa per i generi delle serie TV
+
+//* Funzione per caricare i generi dei film e delle serie TV
+async function loadGenres() {
+    try {
+        const TMDB_API_KEY = process.env.TMDB_API_KEY;
+        // chiamo l'API per i generi dei film
+        const moviesGenresResponse = await axios.get(`${TMDB_BASE_URL}/genre/movie/list`, {
+            params: { api_key: TMDB_API_KEY, language: 'it-IT' }
+        });
+        // riempio la mappa dei generi dei film
+        // moviesGenresResponse.data.genres accedo ai dati
+        // itero con il forEach per ogni genere attraverso l'id e il nome
+        // e aggiungo alla mappa con set
+        moviesGenresResponse.data.genres.forEach(genre => {
+            movieGenresMap.set(genre.id, genre.name);
+        });
+
+        // chiamo l'API per i generi delle serie TV
+        const tvGenresResponse = await axios.get(`${TMDB_BASE_URL}/genre/tv/list`, {
+            params: { api_key: TMDB_API_KEY, language: 'it-IT' }
+        });
+        // riempio la mappa dei generi delle serie TV
+        tvGenresResponse.data.genres.forEach(genre => {
+            tvGenresMap.set(genre.id, genre.name);
+        });
+
+        console.log('Generi caricati con successo');
+    } catch (error) {
+        console.error('Errore durante il caricamento dei generi:', error.message);
+        // non blocco l'applicazione, ma registro l'errore
+    }
+}
+        
+
 //* Definizione GET per la ricerca combinata di film e serie TV
 router.get('/', async (req, res) => {
     try {
@@ -93,6 +130,10 @@ router.get('/', async (req, res) => {
         }
     }
 });
+
+
+//* Carico i generi all'avvio del server una sola volta
+loadGenres()
 
 //* Esportazione del router
 module.exports = router;
